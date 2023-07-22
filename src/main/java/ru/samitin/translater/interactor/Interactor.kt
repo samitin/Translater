@@ -1,4 +1,4 @@
-package ru.samitin.translater.presenter
+package ru.samitin.translater.interactor
 
 import io.reactivex.Observable
 

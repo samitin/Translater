@@ -2,7 +2,7 @@ package ru.samitin.translater.view.main.interactor
 
 import io.reactivex.Observable
 import ru.samitin.translater.model.data.DataModel
-import ru.samitin.translater.presenter.Interactor
+import ru.samitin.translater.interactor.Interactor
 import ru.samitin.translater.model.repository.Repository
 import ru.samitin.translater.model.data.state.AppState
 
