@@ -1,50 +1,52 @@
 package ru.samitin.translater.view.main.viewModel
 
 import androidx.lifecycle.LiveData
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import ru.samitin.translater.model.data.state.AppState
-import ru.samitin.translater.model.dataSource.dataSource.DataSourceLocal
-import ru.samitin.translater.model.dataSource.dataSource.DataSourceRemote
-import ru.samitin.translater.model.repository.RepositoryImplementation
+import ru.samitin.translater.utils.parseSearchResults
 import ru.samitin.translater.view.base.BaseViewModel
 import ru.samitin.translater.view.main.interactor.MainInteractor
+import javax.inject.Inject
 
-class MainViewModel(private val interactor: MainInteractor = MainInteractor(
-    RepositoryImplementation(DataSourceRemote()),
-    RepositoryImplementation(DataSourceLocal())
-)
-) : BaseViewModel<AppState>() {
-    // В этой переменной хранится последнее состояние Activity
-    private var appState : AppState ?= null
+// Инжектим интерактор в конструктор
 
-    // Переопределяем метод из BaseViewModel
-    override fun getData(world: String, isOnline: Boolean): LiveData<AppState> {
-        compositeDisposable.add(
-            interactor.getData(world,isOnline).
-                    subscribeOn(shedulerProvider.io()).
-                    observeOn(shedulerProvider.ui()).
-                    doOnSubscribe{liveDataForViewToObserve.value = AppState.Loading(null)}.
-                    subscribeWith(getObserver())
-        )
-        return super.getData(world, isOnline)
+class MainViewModel @Inject constructor(private val interactor: MainInteractor) :
+    BaseViewModel<AppState>() {
+
+    private var appState: AppState? = null
+
+    fun subscribe(): LiveData<AppState> {
+        return liveDataForViewToObserve
     }
 
-    private fun getObserver() : DisposableObserver<AppState>{
-        return object: DisposableObserver<AppState>(){
-            // Данные успешно загружены; сохраняем их и передаем во View (через
-            // LiveData). View сама разберётся, как их отображать
-            override fun onNext(t: AppState) {
-                appState = t
-                liveDataForViewToObserve.value = t
+    override fun getData(word: String, isOnline: Boolean) {
+        compositeDisposable.add(
+            interactor.getData(word, isOnline)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .doOnSubscribe(doOnSubscribe())
+                .subscribeWith(getObserver())
+        )
+    }
+
+    private fun doOnSubscribe(): (Disposable) -> Unit =
+        { liveDataForViewToObserve.value = AppState.Loading(null) }
+
+    private fun getObserver(): DisposableObserver<AppState> {
+        return object : DisposableObserver<AppState>() {
+
+            override fun onNext(state: AppState) {
+                appState = parseSearchResults(state)
+                liveDataForViewToObserve.value = appState
             }
-            // В случае ошибки передаём её в Activity таким же образом через LiveData
+
             override fun onError(e: Throwable) {
                 liveDataForViewToObserve.value = AppState.Error(e)
             }
 
             override fun onComplete() {
             }
-
         }
     }
 }
