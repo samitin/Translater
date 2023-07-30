@@ -13,7 +13,9 @@ import ru.samitin.translater.view.base.BaseActivity
 import ru.samitin.translater.databinding.ActivityMainBinding
 import ru.samitin.translater.model.data.DataModel
 import ru.samitin.translater.model.data.state.AppState
+import ru.samitin.translater.utils.convertMeaningsToString
 import ru.samitin.translater.utils.network.isOnline
+import ru.samitin.translater.view.description.DescriptionActivity
 import ru.samitin.translater.view.main.adapter.MainAdapter
 import ru.samitin.translater.view.main.interactor.MainInteractor
 import ru.samitin.translater.view.main.screen.search.SearchDialogFragment
@@ -31,7 +33,14 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
-                Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
+                startActivity(
+                    DescriptionActivity.getIntent(
+                        this@MainActivity,
+                        data.text!!,
+                        convertMeaningsToString(data.meanings!!),
+                        data.meanings[0].imageUrl
+                    )
+                )
             }
         }
     private val onSearchClickListener: SearchDialogFragment.OnSearchListener =

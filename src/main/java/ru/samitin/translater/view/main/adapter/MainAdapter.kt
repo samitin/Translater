@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.samitin.translater.databinding.ActivityMainRecyclerviewItemBinding
 import ru.samitin.translater.model.data.DataModel
+import ru.samitin.translater.utils.convertMeaningsToString
 
+// Передаём в адаптер слушатель нажатия на список
 class MainAdapter(
     private var onListItemClickListener: OnListItemClickListener,
 ) :RecyclerView.Adapter<MainAdapter.RecyclerViewViewHolder>(){
@@ -37,13 +39,15 @@ class MainAdapter(
             if (layoutPosition != RecyclerView.NO_POSITION){
                 binding.apply {
                     headerTextviewRecyclerItem.text = dataModel.text
-                    descriptionTextviewRecyclerItem.text = dataModel.meanings?.get(0)?.translation?.translation
+                    descriptionTextviewRecyclerItem.text = convertMeaningsToString(dataModel.meanings!!)
+                    // Вешаем слушатель
                     itemView.setOnClickListener { openInNewWindow(dataModel) }
                 }
             }
         }
     }
 
+    // Передаём событие в MainActivity
     private fun openInNewWindow(listItemData: DataModel){
         onListItemClickListener.onItemClick(dataModel = listItemData)
     }
