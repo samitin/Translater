@@ -31,12 +31,20 @@ class DescriptionActivity : AppCompatActivity() {
         setContentView(binding.root)
         //установить кнопку «Домой» на панели действий вверху:
         setActionbarHomeButtonAsUp()
+        //установить прослушиватель обновления
         binding.descriptionScreenSwipeRefreshLayout.setOnRefreshListener {
             //начать загрузку или показать ошибку
             startLoadingOrShowError()
         }
         //установить данные
         setData()
+    }
+    //установить кнопку «Домой» на панели действий вверху:
+    private fun setActionbarHomeButtonAsUp() {
+        //включить кнопку «Домой»:
+        supportActionBar?.setHomeButtonEnabled(true)
+        //установить Отображение главного экрана Как включено
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -47,25 +55,7 @@ class DescriptionActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-    //установить кнопку «Домой» на панели действий вверху:
-    private fun setActionbarHomeButtonAsUp() {
-        //включить кнопку «Домой»:
-        supportActionBar?.setHomeButtonEnabled(true)
-        //установить Отображение главного экрана Как включено
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-    private fun setData() {
-        val bundle = intent.extras
-        binding.descriptionHeader.text = bundle?.getString(WORD_EXTRA)
-        binding.descriptionTextview.text = bundle?.getString(DESCRIPTION_EXTRA)
-        val imageLink = bundle?.getString(URL_EXTRA)
-        if (imageLink.isNullOrBlank()) {
-            stopRefreshAnimationIfNeeded()
-        } else {
-            //usePicassoToLoadPhoto(binding.descriptionImageview, imageLink)
-            useGlideToLoadPhoto(binding.descriptionImageview, imageLink)
-        }
-    }
+
     //начать загрузку или показать ошибку:
     private fun startLoadingOrShowError() {
         if (isOnline(applicationContext)) {
@@ -87,6 +77,20 @@ class DescriptionActivity : AppCompatActivity() {
             binding.descriptionScreenSwipeRefreshLayout.isRefreshing = false
         }
     }
+
+    private fun setData() {
+        val bundle = intent.extras
+        binding.descriptionHeader.text = bundle?.getString(WORD_EXTRA)
+        binding.descriptionTextview.text = bundle?.getString(DESCRIPTION_EXTRA)
+        val imageLink = bundle?.getString(URL_EXTRA)
+        if (imageLink.isNullOrBlank()) {
+            stopRefreshAnimationIfNeeded()
+        } else {
+            //usePicassoToLoadPhoto(binding.descriptionImageview, imageLink)
+            useGlideToLoadPhoto(binding.descriptionImageview, imageLink)
+        }
+    }
+
     private fun usePicassoToLoadPhoto(imageView: ImageView, imageLink: String) {
         Picasso.get().load("https:$imageLink")
             .placeholder(R.drawable.ic_no_photo_vector).fit().centerCrop()
@@ -104,23 +108,12 @@ class DescriptionActivity : AppCompatActivity() {
         Glide.with(imageView)
             .load("https:$imageLink")
             .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     stopRefreshAnimationIfNeeded()
                     imageView.setImageResource(R.drawable.ic_load_error_vector)
                     return false
                 }
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                     stopRefreshAnimationIfNeeded()
                     return false
                 }
@@ -131,6 +124,24 @@ class DescriptionActivity : AppCompatActivity() {
                     .centerCrop()
             )
             .into(imageView)
+    }
+    private fun useCoilToLoadPhoto(imageView: ImageView, imageLink: String) {
+        val request = LoadRequest.Builder(this)
+            .data("https:$imageLink")
+            .target(
+                onStart = {},
+                onSuccess = { result ->
+                    imageView.setImageDrawable(result)
+                },
+                onError = {
+                    imageView.setImageResource(R.drawable.ic_load_error_vector)
+                }
+            )
+            .transformations(
+                CircleCropTransformation(),
+            )
+            .build()
+        ImageLoader(this).execute(request)
     }
     companion object {
         private const val DIALOG_FRAGMENT_TAG = "8c7dff51-9769-4f6d-bbee-a3896085e76e"
