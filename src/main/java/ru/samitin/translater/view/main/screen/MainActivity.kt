@@ -27,20 +27,15 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
-    private val fabClickListener: View.OnClickListener =
-        View.OnClickListener {
-            val searchDialogFragment = SearchDialogFragment.newInstance()
-            searchDialogFragment.setOnSearchClickListener(onSearchClickListener)
-            searchDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
-        }
+
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
                 Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
             }
         }
-    private val onSearchClickListener: SearchDialogFragment.OnSearchClickListener =
-        object : SearchDialogFragment.OnSearchClickListener {
+    private val onSearchClickListener: SearchDialogFragment.OnSearchListener =
+        object : SearchDialogFragment.OnSearchListener {
             override fun onClick(searchWord: String) {
                 isNetworkAvailable = isOnline(applicationContext)
                 if (isNetworkAvailable) {
@@ -73,7 +68,11 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         model.subscribe().observe(this@MainActivity){renderData(it)}
     }
     private fun initViews(){
-        binding.searchFab.setOnClickListener(fabClickListener)
+        val searchDialogFragment = SearchDialogFragment.newInstance()
+        searchDialogFragment.setOnSearchClickListener(onSearchClickListener)
+        supportFragmentManager.beginTransaction()
+            .add(binding.searchContainer.id,searchDialogFragment)
+            .commit()
         binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
         binding.mainActivityRecyclerview.adapter = adapter
     }

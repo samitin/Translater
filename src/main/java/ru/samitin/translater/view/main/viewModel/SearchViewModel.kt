@@ -1,8 +1,6 @@
 package ru.samitin.translater.view.main.viewModel
 
 import androidx.lifecycle.LiveData
-import io.reactivex.disposables.Disposable
-import io.reactivex.observers.DisposableObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,7 +9,7 @@ import ru.samitin.translater.utils.parseSearchResults
 import ru.samitin.translater.view.base.BaseViewModel
 import ru.samitin.translater.view.main.interactor.MainInteractor
 
-class MainViewModel(private val interactor: MainInteractor) :
+class SearchViewModel(private val interactor: MainInteractor) :
     BaseViewModel<AppState>() {
     private val liveDataForViewToObserve: LiveData<AppState> = _mutableLiveData
     fun subscribe(): LiveData<AppState> {

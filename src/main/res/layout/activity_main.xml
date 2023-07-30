@@ -10,20 +10,20 @@
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/search_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_activity_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/search_fab"
-                android:src="@drawable/ic_search"
-                android:layout_width="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginBottom="@dimen/margin_medium"
-                android:layout_marginEnd="@dimen/margin_medium"
-                android:layout_height="wrap_content"/>
     </FrameLayout>
 
     <FrameLayout
