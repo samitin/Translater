@@ -8,8 +8,6 @@
         android:fitsSystemWindows="true"
         android:layout_marginBottom="@dimen/margin_medium">
 
-
-
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/margin_medium"

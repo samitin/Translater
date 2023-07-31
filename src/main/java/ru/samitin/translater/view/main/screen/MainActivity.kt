@@ -1,14 +1,14 @@
 package ru.samitin.translater.view.main.screen
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.View.*
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+import androidx.recyclerview.widget.LinearLayoutManager
 import ru.samitin.translater.R
+
 import ru.samitin.translater.view.base.BaseActivity
 import ru.samitin.translater.databinding.ActivityMainBinding
 import ru.samitin.translater.model.data.DataModel
@@ -16,6 +16,7 @@ import ru.samitin.translater.model.data.state.AppState
 import ru.samitin.translater.utils.convertMeaningsToString
 import ru.samitin.translater.utils.network.isOnline
 import ru.samitin.translater.view.description.DescriptionActivity
+import ru.samitin.translater.view.history.screen.HistoryActivity
 import ru.samitin.translater.view.main.adapter.MainAdapter
 import ru.samitin.translater.view.main.interactor.MainInteractor
 import ru.samitin.translater.view.main.screen.search.SearchDialogFragment
@@ -74,7 +75,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         // import org.koin.androidx.viewmodel.ext.android.viewModel
         val viewModel:MainViewModel by viewModel()
         model = viewModel
-        model.subscribe().observe(this@MainActivity){renderData(it)}
+        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
     }
     private fun initViews(){
         val searchDialogFragment = SearchDialogFragment.newInstance()
@@ -87,44 +88,22 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     }
 
 
-    override fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.Success -> {
-                showViewWorking()
-                val data = appState.data
-                if (data.isNullOrEmpty()) {
-                    showAlertDialog(
-                        getString(R.string.dialog_tittle_sorry),
-                        getString(R.string.empty_server_response_on_success)
-                    )
-                } else {
-                    adapter.setData(data)
-                }
+    override fun setDataToAdapter(data: List<DataModel>) {
+        adapter.setData(data)
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.history_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                startActivity(Intent(this, HistoryActivity::class.java))
+                true
             }
-            is AppState.Loading -> {
-                showViewLoading()
-                if (appState.progress != null) {
-                    binding.progressBarHorizontal.visibility = VISIBLE
-                    binding.progressBarRound.visibility = GONE
-                    binding.progressBarHorizontal.progress = appState.progress
-                } else {
-                    binding.progressBarHorizontal.visibility = GONE
-                    binding.progressBarRound.visibility = VISIBLE
-                }
-            }
-            is AppState.Error -> {
-                showViewWorking()
-                showAlertDialog(getString(R.string.error_stub), appState.error.message)
-            }
+            else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun showViewWorking() {
-        binding.loadingFrameLayout.visibility = GONE
-    }
-
-    private fun showViewLoading() {
-        binding.loadingFrameLayout.visibility = VISIBLE
     }
 
     companion object {

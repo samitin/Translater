@@ -1,8 +1,10 @@
 package ru.samitin.translater.view.app
 
 import android.app.Application
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.samitin.translater.di.application
+import ru.samitin.translater.di.historyScreen
 import ru.samitin.translater.di.mainScreen
 
 
@@ -16,7 +18,8 @@ class TranslatorApp : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            modules(mainScreen, application)
+            androidContext(applicationContext)
+            modules(mainScreen, application,historyScreen)
         }
     }
 }
