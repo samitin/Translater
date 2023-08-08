@@ -1,11 +1,11 @@
 package ru.samitin.translater.view.main.interactor
 
-import io.reactivex.Observable
-import ru.samitin.translater.model.data.DataModel
-import ru.samitin.translater.interactor.Interactor
-import ru.samitin.translater.model.repository.Repository
-import ru.samitin.translater.model.data.state.AppState
-import ru.samitin.translater.model.repository.RepositoryLocal
+
+import ru.samitin.core.viewModel.Interactor
+import ru.samitin.model.DataModel
+import ru.samitin.model.state.AppState
+import ru.samitin.repository.Repository
+import ru.samitin.repository.RepositoryLocal
 
 
 class MainInteractor(

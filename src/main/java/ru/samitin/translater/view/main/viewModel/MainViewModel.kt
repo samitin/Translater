@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.samitin.translater.model.data.state.AppState
+import ru.samitin.core.viewModel.BaseViewModel
+import ru.samitin.model.state.AppState
+
+
 import ru.samitin.translater.utils.parseOnlineSearchResults
-import ru.samitin.translater.view.base.BaseViewModel
 import ru.samitin.translater.view.main.interactor.MainInteractor
 
 class MainViewModel(private val interactor: MainInteractor) :

@@ -1,9 +1,10 @@
 package ru.samitin.translater.utils
 
-import ru.samitin.translater.model.data.DataModel
-import ru.samitin.translater.model.data.Meanings
-import ru.samitin.translater.model.data.state.AppState
-import ru.samitin.translater.model.dataSource.room.HistoryEntity
+import ru.samitin.model.DataModel
+import ru.samitin.model.HistoryEntity
+import ru.samitin.model.Meanings
+import ru.samitin.model.state.AppState
+
 
 // Все методы говорят сами за себя, универсальны и парсят данные в зависимости
 // от источника данных (интернет или БД), возвращая их в понятном для наших
@@ -50,9 +51,9 @@ private fun parseOnlineResult(dataModel: DataModel, newDataModels:
 ArrayList<DataModel>) {
     if (!dataModel.text.isNullOrBlank() && !dataModel.meanings.isNullOrEmpty()) {
         val newMeanings = arrayListOf<Meanings>()
-        for (meaning in dataModel.meanings) {
+        for (meaning in dataModel.meanings!!) {
             if (meaning.translation != null &&
-                !meaning.translation.translation.isNullOrBlank()) {
+                !meaning.translation!!.translation.isNullOrBlank()) {
                 newMeanings.add(Meanings(meaning.translation, meaning.imageUrl))
             }
         }

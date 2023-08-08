@@ -20,8 +20,9 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import ru.samitin.translater.R
 import ru.samitin.translater.databinding.ActivityDescriptionBinding
-import ru.samitin.translater.utils.network.isOnline
-import ru.samitin.translater.utils.ui.AlertDialogFragment
+import ru.samitin.utils.network.isOnline
+import ru.samitin.utils.ui.AlertDialogFragment
+
 
 class DescriptionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDescriptionBinding

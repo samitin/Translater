@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.samitin.translater.databinding.ActivityMainRecyclerviewItemBinding
-import ru.samitin.translater.model.data.DataModel
+import ru.samitin.model.DataModel
 import ru.samitin.translater.utils.convertMeaningsToString
 
 // Передаём в адаптер слушатель нажатия на список

@@ -7,25 +7,30 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import ru.samitin.core.BaseActivity
+import ru.samitin.history.HistoryActivity
 import ru.samitin.translater.R
 
-import ru.samitin.translater.view.base.BaseActivity
 import ru.samitin.translater.databinding.ActivityMainBinding
-import ru.samitin.translater.model.data.DataModel
-import ru.samitin.translater.model.data.state.AppState
+import ru.samitin.model.DataModel
+import ru.samitin.model.state.AppState
+
 import ru.samitin.translater.utils.convertMeaningsToString
-import ru.samitin.translater.utils.network.isOnline
 import ru.samitin.translater.view.description.DescriptionActivity
-import ru.samitin.translater.view.history.screen.HistoryActivity
 import ru.samitin.translater.view.main.adapter.MainAdapter
 import ru.samitin.translater.view.main.interactor.MainInteractor
 import ru.samitin.translater.view.main.screen.search.SearchDialogFragment
 import ru.samitin.translater.view.main.viewModel.MainViewModel
+import ru.samitin.utils.network.isOnline
+import ru.samitin.utils.ui.viewById
 
 
 // Контракта уже нет
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
-
+    //Объявляем переменные на уровне класса
+    private val mainActivityRecyclerview by
+    viewById<RecyclerView>(R.id.main_activity_recyclerview)
 
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainViewModel
@@ -39,7 +44,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                         this@MainActivity,
                         data.text!!,
                         convertMeaningsToString(data.meanings!!),
-                        data.meanings[0].imageUrl
+                        data.meanings!![0].imageUrl
                     )
                 )
             }
@@ -83,8 +88,8 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         supportFragmentManager.beginTransaction()
             .add(binding.searchContainer.id,searchDialogFragment)
             .commit()
-        binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
-        binding.mainActivityRecyclerview.adapter = adapter
+        mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
+        mainActivityRecyclerview.adapter = adapter
     }
 
 
