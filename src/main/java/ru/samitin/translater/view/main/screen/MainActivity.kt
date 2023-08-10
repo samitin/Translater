@@ -10,19 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.samitin.core.BaseActivity
 import ru.samitin.history.HistoryActivity
+import ru.samitin.model.entity.DataModel
 import ru.samitin.translater.R
-
 import ru.samitin.translater.databinding.ActivityMainBinding
-import ru.samitin.model.DataModel
 import ru.samitin.model.state.AppState
-
-import ru.samitin.translater.utils.convertMeaningsToString
+import ru.samitin.translater.utils.convertMeaningsToSingleString
 import ru.samitin.translater.view.description.DescriptionActivity
 import ru.samitin.translater.view.main.adapter.MainAdapter
 import ru.samitin.translater.view.main.interactor.MainInteractor
 import ru.samitin.translater.view.main.screen.search.SearchDialogFragment
 import ru.samitin.translater.view.main.viewModel.MainViewModel
-import ru.samitin.utils.network.isOnline
 import ru.samitin.utils.ui.viewById
 
 
@@ -43,7 +40,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                     DescriptionActivity.getIntent(
                         this@MainActivity,
                         data.text!!,
-                        convertMeaningsToString(data.meanings!!),
+                        convertMeaningsToSingleString(data.meanings!!),
                         data.meanings!![0].imageUrl
                     )
                 )
@@ -52,7 +49,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private val onSearchClickListener: SearchDialogFragment.OnSearchListener =
         object : SearchDialogFragment.OnSearchListener {
             override fun onClick(searchWord: String) {
-                isNetworkAvailable = isOnline(applicationContext)
+                //isNetworkAvailable = isOnline(applicationContext)
                 if (isNetworkAvailable) {
                     model.getData(searchWord, isNetworkAvailable)
                 } else {
@@ -62,14 +59,13 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initVieModel()
         initViews()
     }
+
     private fun initVieModel(){
         // Убедимся, что модель инициализируется раньше View
         if (binding.mainActivityRecyclerview.adapter != null)

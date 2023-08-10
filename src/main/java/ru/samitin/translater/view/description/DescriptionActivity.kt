@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import coil.ImageLoader
 import coil.request.LoadRequest
 import coil.transform.CircleCropTransformation
@@ -20,6 +21,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import ru.samitin.translater.R
 import ru.samitin.translater.databinding.ActivityDescriptionBinding
+import ru.samitin.utils.network.OnlineLiveData
 import ru.samitin.utils.network.isOnline
 import ru.samitin.utils.ui.AlertDialogFragment
 
@@ -59,18 +61,22 @@ class DescriptionActivity : AppCompatActivity() {
 
     //начать загрузку или показать ошибку:
     private fun startLoadingOrShowError() {
-        if (isOnline(applicationContext)) {
-            setData()
-        } else {
-            AlertDialogFragment.newInstance(
-                getString(R.string.dialog_title_device_is_offline),
-                getString(R.string.dialog_message_device_is_offline)
-            ).show(
-                supportFragmentManager,
-                DIALOG_FRAGMENT_TAG
-            )
-            stopRefreshAnimationIfNeeded()
-        }
+        OnlineLiveData(this).observe(
+            this@DescriptionActivity,
+            Observer<Boolean> {
+                if (it) {
+                    setData()
+                } else {
+                    AlertDialogFragment.newInstance(
+                        getString(R.string.dialog_title_device_is_offline),
+                        getString(R.string.dialog_message_device_is_offline)
+                    ).show(
+                    supportFragmentManager,
+                    DIALOG_FRAGMENT_TAG
+                    )
+                    stopRefreshAnimationIfNeeded()
+                }
+            })
     }
     //остановить Обновить анимацию, если необходимо
     private fun stopRefreshAnimationIfNeeded() {

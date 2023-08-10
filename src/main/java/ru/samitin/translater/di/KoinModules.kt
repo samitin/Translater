@@ -4,12 +4,11 @@ package ru.samitin.translater.di
 
 import androidx.room.Room
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koin.dsl.scoped
-import ru.samitin.history.view.history.HistoryInteractor
-import ru.samitin.history.view.history.HistoryViewModel
-import ru.samitin.model.DataModel
+import ru.samitin.history.HistoryInteractor
+import ru.samitin.history.HistoryViewModel
+
+import ru.samitin.model.SearchResultDto
 import ru.samitin.repository.Repository
 import ru.samitin.repository.RepositoryImplementation
 import ru.samitin.repository.RepositoryImplementationLocal
@@ -18,7 +17,6 @@ import ru.samitin.repository.dataSource.retrofit.RetrofitImplementation
 import ru.samitin.repository.dataSource.room.HistoryDataBase
 import ru.samitin.repository.dataSource.room.RoomDataBaseImplementation
 import ru.samitin.translater.view.main.interactor.MainInteractor
-import ru.samitin.translater.view.main.screen.MainActivity
 import ru.samitin.translater.view.main.viewModel.MainViewModel
 
 // Для удобства создадим две переменные: в одной находятся зависимости,
@@ -31,8 +29,8 @@ val application = module{
     // Функция single сообщает Koin, что эта зависимость должна храниться
     // в виде синглтона (в Dagger есть похожая аннотация)
     // Аннотация named выполняет аналогичную Dagger функцию
-    single<Repository<List<DataModel>>> { RepositoryImplementation(RetrofitImplementation()) }
-    single<RepositoryLocal<List<DataModel>>> { RepositoryImplementationLocal(
+    single<Repository<List<SearchResultDto>>> { RepositoryImplementation(RetrofitImplementation()) }
+    single<RepositoryLocal<List<SearchResultDto>>> { RepositoryImplementationLocal(
         RoomDataBaseImplementation(get())
     )
     }
