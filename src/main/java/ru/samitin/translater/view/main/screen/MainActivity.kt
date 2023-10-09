@@ -30,7 +30,7 @@ import ru.samitin.translater.view.main.screen.search.SearchDialogFragment
 import ru.samitin.translater.view.main.viewModel.MainViewModel
 import ru.samitin.utils.ui.viewById
 
-private const val SLIDE_LEFT_DURATION = 2000
+private const val SLIDE_LEFT_DURATION = 2000L
 // Контракта уже нет
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
     //Объявляем переменные на уровне класса
@@ -89,7 +89,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 -splashScreenView.height.toFloat()
             )
             slideLeft.interpolator = AnticipateInterpolator()
-            slideLeft.duration = 1000L
+            slideLeft.duration = SLIDE_LEFT_DURATION
 
             slideLeft.doOnEnd { splashScreenView.remove() }
             slideLeft.start()
